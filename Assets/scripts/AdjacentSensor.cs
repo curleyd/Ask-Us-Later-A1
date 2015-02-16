@@ -9,12 +9,14 @@ public class AdjacentSensor : MonoBehaviour {
 	public float maxDistance; // Adjacent
 	public bool debug;
 	
-	private RaycastHit2D myHit;
+	//private RaycastHit2D myHit;
 	private Vector3 myDirection;
-	private List<GameObject> hitList; 
+	//private List<GameObject> hitList; 
 	private List<float> distanceList;
 	private List<float> angleList; // Adjacent
 	private List<float> angleListPie; // Pie slice
+
+	private GameObject[] nonSubjectAgents;
 
 	void Start() {
 		maxRange = transform.GetComponent<PieSliceSensor>().maxRange;
@@ -27,8 +29,8 @@ public class AdjacentSensor : MonoBehaviour {
 
 		float yFactor;
 		float xFactor;
-		float tempAngle;
-		hitList = new List<GameObject>();
+		float tempAngle, tempDist;
+		//hitList = new List<GameObject>();
 		distanceList = new List<float>();
 		angleList = new List<float>();
 		angleListPie = new List<float>();
@@ -50,11 +52,37 @@ public class AdjacentSensor : MonoBehaviour {
 			Debug.DrawRay(transform.position, thisDist * myDirection, Color.magenta);
 
 			// Cast ray in this direction
-			myHit = Physics2D.Raycast(transform.position, myDirection, maxDistance);
+			//myHit = Physics2D.Raycast(transform.position, myDirection, maxDistance);
 			Debug.DrawRay(transform.position, maxDistance * myDirection, Color.cyan);
 
+			// Get a list of all non-subject agents
+			nonSubjectAgents = GameObject.FindGameObjectsWithTag("Agent");
+
+			// Loop over them and determine if their distance is within the radars
+			for (int j = 0; j < nonSubjectAgents.Length; j++) {
+
+				// Determine distance and angle from this agent to the player
+				tempDist = Vector3.Distance(transform.position, nonSubjectAgents[j].transform.position);
+				tempAngle = angleBetween(transform.up, nonSubjectAgents[j].transform.position);
+
+				// If we have not checked this agent yet
+				if (!angleList.Contains(tempAngle) && !distanceList.Contains(tempDist)) {
+
+					// If within adjacent radar, add it to the list
+					if (tempDist <= maxDistance) {
+						distanceList.Add( tempDist );
+						angleList.Add( tempAngle );
+					}
+
+					// If within the pie slice radar, record its angle
+					if (tempDist <= thisDist) {
+						angleListPie.Add( tempAngle );
+					}
+				}
+			} // end of for j
+
 			// If ray hit something, check if it is a new agent, and if so add it
-			if (myHit.collider != null && myHit.collider.gameObject.tag.Equals("Agent")) {
+		/*	if (myHit.collider != null && myHit.collider.gameObject.tag.Equals("Agent")) {
 				if (myHit.collider.gameObject.GetComponent<StaticAgentController>().getID() >= 0) {
 					if (!hitList.Contains(myHit.collider.gameObject)) {
 
@@ -71,7 +99,7 @@ public class AdjacentSensor : MonoBehaviour {
 					}
 				}
 			} // end of outer if
-
+*/
 		} // end of for i
 
 		collider2D.enabled = true;
@@ -84,19 +112,19 @@ public class AdjacentSensor : MonoBehaviour {
 
 	public string returnAdjacentSensorInfo() {
 
-		if (hitList.Count == 0) {
+		if (angleList.Count == 0) {
 			return "Adjacent = (Empty)";
 		}
 
 		string ret = "Adjacent = [";
 
-		for (int i = 0; i < hitList.Count; i++) {
+		for (int i = 0; i < angleList.Count; i++) {
 			ret += "(";
 			ret += Round(angleList[i], 2); // angle
 			ret += ",";
 			ret += Round(distanceList[i], 2); // distance
 			ret += ")";
-			if (i != hitList.Count - 1) {
+			if (i != angleList.Count - 1) {
 				ret += ", ";
 			}
 		}
