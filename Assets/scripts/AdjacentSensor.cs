@@ -34,10 +34,14 @@ public class AdjacentSensor : MonoBehaviour {
 		distanceList = new List<float>();
 		angleList = new List<float>();
 		angleListPie = new List<float>();
+		//Debug.Log(nonSubjectAgents); 
 	
 		collider2D.enabled = false;
 
+		// For each degree around the player
 		for (int i = 0; i < 360; i++) {
+
+			nonSubjectAgents = GameObject.FindGameObjectsWithTag("Agent");
 
 			// Change x and y factors
 			yFactor = Mathf.Sin(i);
@@ -49,21 +53,17 @@ public class AdjacentSensor : MonoBehaviour {
 
 			// Determine varrying distance for pie slice
 			thisDist = transform.GetComponent<PieSliceSensor>().pieRayDistance(i);
-			Debug.DrawRay(transform.position, thisDist * myDirection, Color.magenta);
 
 			// Cast ray in this direction
 			//myHit = Physics2D.Raycast(transform.position, myDirection, maxDistance);
 			Debug.DrawRay(transform.position, maxDistance * myDirection, Color.cyan);
-
-			// Get a list of all non-subject agents
-			nonSubjectAgents = GameObject.FindGameObjectsWithTag("Agent");
 
 			// Loop over them and determine if their distance is within the radars
 			for (int j = 0; j < nonSubjectAgents.Length; j++) {
 
 				// Determine distance and angle from this agent to the player
 				tempDist = Vector3.Distance(transform.position, nonSubjectAgents[j].transform.position);
-				tempAngle = angleBetween(transform.up, nonSubjectAgents[j].transform.position);
+				tempAngle = angleBetween(transform.up, nonSubjectAgents[j].transform.position - transform.position);
 
 				// If we have not checked this agent yet
 				if (!angleList.Contains(tempAngle) && !distanceList.Contains(tempDist)) {

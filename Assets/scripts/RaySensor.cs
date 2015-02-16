@@ -17,17 +17,15 @@ public class RaySensor : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		collider2D.enabled = false;
-
 		upDirection = transform.up.normalized;
 		leftDirection = transform.up.normalized + -1 * transform.right.normalized;
 		leftDirection.Normalize();
 		rightDirection = transform.up.normalized + transform.right.normalized;
 		rightDirection.Normalize();
 
-		hitUp = Physics2D.Raycast(transform.position, upDirection, maxDistance);
-		hitLeft = Physics2D.Raycast(transform.position, leftDirection, maxDistance);
-		hitRight = Physics2D.Raycast(transform.position, rightDirection, maxDistance);
+		collider2D.enabled = false;  hitUp = Physics2D.Raycast(transform.position, upDirection, maxDistance);
+		collider2D.enabled = false;  hitLeft = Physics2D.Raycast(transform.position, leftDirection, maxDistance);
+		collider2D.enabled = false;  hitRight = Physics2D.Raycast(transform.position, rightDirection, maxDistance);
 
 		if (debug && (hitUp.collider != null || hitLeft.collider != null || hitRight.collider != null)) {
 			Debug.DrawRay(transform.position, maxDistance * upDirection, Color.green);
@@ -41,9 +39,9 @@ public class RaySensor : MonoBehaviour {
 	}
 
 	public string returnWallSensorInfo() {
-		float upDist = Round(hitUp.distance, 2);
-		float leftDist = Round(hitLeft.distance, 2);
-		float rightDist = Round(hitRight.distance, 2);
+		float upDist = Round(hitUp.distance, 2);  if (upDist == 0f) { upDist = maxDistance; }
+		float leftDist = Round(hitLeft.distance, 2);  if (leftDist == 0f) { leftDist = maxDistance; }
+		float rightDist = Round(hitRight.distance, 2);  if (rightDist == 0f) { rightDist = maxDistance; }
 		return "Ray = Left " + leftDist + ", Up " + upDist + ", Right " + rightDist;
 	}
 

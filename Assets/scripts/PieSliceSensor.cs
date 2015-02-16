@@ -33,11 +33,27 @@ public class PieSliceSensor : MonoBehaviour {
 
 		upPie = 0f;  downPie = 0f;  leftPie = 0f;  rightPie = 0f;
 		upCount = 0;  downCount = 0;  leftCount = 0;  rightCount = 0;
-		//float temp1 = forwardBoundaryAngle / 2f;
-		//float temp2 = 90f + (sideBoundaryAngle/2f);
-		//float temp3 = 180f + (forwardBoundaryAngle / 2f);
-		//float temp4 = 270f + (sideBoundaryAngle / 2f);
+		/*
+		float temp1 = forwardBoundaryAngle / 2f;
+		float temp2 = 90f + (sideBoundaryAngle/2f);
+		float temp3 = 180f + (forwardBoundaryAngle / 2f);
+		float temp4 = 270f + (sideBoundaryAngle / 2f);
 
+		Quaternion p1 = Quaternion.AngleAxis(temp1, transform.up);
+		Quaternion p2 = Quaternion.AngleAxis(temp2, transform.up);
+		Quaternion p3 = Quaternion.AngleAxis(temp3, transform.up);
+		Quaternion p4 = Quaternion.AngleAxis(temp4, transform.up);
+
+		Vector3 pie1 = new Vector3 (p1[0], p1[1], 0);
+		Vector3 pie2 = new Vector3 (p2[0], p2[1], 0);
+		Vector3 pie3 = new Vector3 (p3[0], p3[1], 0);
+		Vector3 pie4 = new Vector3 (p4[0], p4[1], 0);
+
+		Debug.DrawRay(transform.position, maxRange * pie1, Color.magenta);
+		Debug.DrawRay(transform.position, maxRange * pie2, Color.magenta);
+		Debug.DrawRay(transform.position, maxRange * pie3, Color.magenta);
+		Debug.DrawRay(transform.position, maxRange * pie4, Color.magenta);
+		*/
 		// First get angles list from the adjacent sensor
 		anglesList = transform.GetComponent<AdjacentSensor>().getPieAngles();
 
@@ -91,8 +107,7 @@ public class PieSliceSensor : MonoBehaviour {
 	// Given the angle, determine how long the raycast should be
 	public float pieRayDistance(float angle) {
 
-		float discreteAngle;
-		float myAngle;
+		float discreteAngle, myAngle, temp;
 		float saveAngle = angle;
 		angle = angle % 180f;
 
@@ -108,7 +123,8 @@ public class PieSliceSensor : MonoBehaviour {
 			discreteAngle = saveAngle % (forwardBoundaryAngle / 2f);
 		}
 
-		return Mathf.Abs( maxRange *  Mathf.Sin(myAngle) / Mathf.Sin(180f - (myAngle + discreteAngle)) );
+		temp = Mathf.Abs( maxRange *  Mathf.Sin(myAngle) / Mathf.Sin(180f - (myAngle + discreteAngle)) );
+		return Mathf.Min(temp, maxRange) ;
 
 	}
 
