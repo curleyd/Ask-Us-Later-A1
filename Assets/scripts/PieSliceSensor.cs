@@ -39,15 +39,10 @@ public class PieSliceSensor : MonoBehaviour {
 		float temp3 = 180f + (forwardBoundaryAngle / 2f);
 		float temp4 = 270f + (sideBoundaryAngle / 2f);
 
-		Quaternion p1 = Quaternion.AngleAxis(temp1, transform.up);
-		Quaternion p2 = Quaternion.AngleAxis(temp2, transform.up);
-		Quaternion p3 = Quaternion.AngleAxis(temp3, transform.up);
-		Quaternion p4 = Quaternion.AngleAxis(temp4, transform.up);
-
-		Vector3 pie1 = new Vector3 (p1[0], p1[1], 0);
-		Vector3 pie2 = new Vector3 (p2[0], p2[1], 0);
-		Vector3 pie3 = new Vector3 (p3[0], p3[1], 0);
-		Vector3 pie4 = new Vector3 (p4[0], p4[1], 0);
+		Vector3 pie1 = new Vector3 (transform.up.x * Mathf.Sin((temp1) * Mathf.Deg2Rad), transform.up.y * Mathf.Cos((temp1) * Mathf.Deg2Rad), 0);
+		Vector3 pie2 = new Vector3 (transform.up.x * Mathf.Sin((temp2) * Mathf.Deg2Rad), transform.up.y * Mathf.Cos((temp2) * Mathf.Deg2Rad), 0);
+		Vector3 pie3 = new Vector3 (transform.up.x * Mathf.Sin((temp3) * Mathf.Deg2Rad), transform.up.y * Mathf.Cos((temp3) * Mathf.Deg2Rad), 0);
+		Vector3 pie4 = new Vector3 (transform.up.x * Mathf.Sin((temp4) * Mathf.Deg2Rad), transform.up.y * Mathf.Cos((temp4) * Mathf.Deg2Rad), 0);
 
 		Debug.DrawRay(transform.position, maxRange * pie1, Color.magenta);
 		Debug.DrawRay(transform.position, maxRange * pie2, Color.magenta);
